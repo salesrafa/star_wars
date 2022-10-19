@@ -4,8 +4,8 @@ import { AppModule } from "./app.module";
 
 async function bootstrap() {
   try {
-    const dataIsImported = await PublicApiService.loadData();
-    if (dataIsImported) {
+    const dataImported = await PublicApiService.loadData();
+    if (dataImported) {
       const app = await NestFactory.create(AppModule);
       await app.listen(3000);
     }
