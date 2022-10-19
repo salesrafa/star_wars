@@ -4,6 +4,8 @@ import { AppService } from "./services/app.service";
 import { ConfigModule } from "@nestjs/config";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Planet } from "./models/planet.model";
+import { Film } from "./models/film.model";
+import { FilmsService } from "./services/films.service";
 
 @Module({
   imports: [
@@ -15,12 +17,12 @@ import { Planet } from "./models/planet.model";
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [Planet],
+      models: [Planet, Film],
       autoLoadModels: true,
       synchronize: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  // controllers: [AppController],
+  // providers: [AppService, FilmsService],
 })
 export class AppModule {}
