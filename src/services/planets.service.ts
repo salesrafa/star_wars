@@ -49,12 +49,14 @@ export class PlanetsService {
     });
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<boolean> {
     await this.removeFilmPlanets(id);
     const planet = await this.findOne(id);
     if (planet) {
       await planet.destroy();
+      return true;
     }
+    return false;
   }
 
   async removeFilmPlanets(planetId): Promise<void> {
@@ -72,7 +74,7 @@ export class PlanetsService {
           climate: planets[i].climate,
           terrain: planets[i].terrain,
         },
-        paranoid: false
+        paranoid: false,
       });
 
       for (const filmId of planets[i].filmIds) {
@@ -91,10 +93,11 @@ export class PlanetsService {
     }
   }
 
-  async update(id, planet): Promise<void> {
-    await this.planetModel.update(
+  async update(id, planet): Promise<boolean> {
+    const [affectedCount] = await this.planetModel.update(
       { name: planet.name, climate: planet.climate, terrain: planet.terrain },
       { where: { id: id } }
     );
+    return affectedCount > 0;
   }
 }

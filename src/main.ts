@@ -10,14 +10,14 @@ import { FilmPlanet } from "./models/filmPlanet.model";
 async function bootstrap() {
   try {
     const planetsApp = await NestFactory.create(AppModule);
-
-    const films = await PublicApiService.loadFilms();
-    const filmService = new FilmsService(Film);
-    await filmService.insertFilms(films);
-
-    const planets = await PublicApiService.loadPlanets();
-    const planetService = new PlanetsService(Planet, Film, FilmPlanet);
-    await planetService.insertPlanets(planets);
+    //
+    // const films = await PublicApiService.loadFilms();
+    // const filmService = new FilmsService(Film);
+    // await filmService.insertFilms(films);
+    //
+    // const planets = await PublicApiService.loadPlanets();
+    // const planetService = new PlanetsService(Planet, Film, FilmPlanet);
+    // await planetService.insertPlanets(planets);
 
     await planetsApp.listen(3000);
   } catch (e) {
