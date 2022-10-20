@@ -15,12 +15,32 @@ export class PlanetsService {
     private filmPlanetModel: typeof FilmPlanet
   ) {}
 
-  async findAll(name: string): Promise<Planet[]> {
+  async findAll(name: string): Promise<any> {
     let condition = {};
     if (name) {
       condition = { name: name };
     }
-    return this.planetModel.findAll({ where: condition });
+    const filmPlanets = await this.planetModel.findAll({
+      where: condition,
+      include: [{ model: FilmPlanet, include: [{ model: Film }] }],
+    });
+
+    return filmPlanets.map((planet) => {
+      const films = planet.filmPlanets.map((filmPlanet) => {
+        return {
+          name: filmPlanet.film.name,
+          director: filmPlanet.film.director,
+          release_date: filmPlanet.film.releaseDate,
+        };
+      });
+      return {
+        id: planet.id,
+        name: planet.name,
+        climate: planet.climate,
+        terrain: planet.terrain,
+        films: films,
+      };
+    });
   }
 
   findOne(id: number): Promise<Planet> {
@@ -30,8 +50,13 @@ export class PlanetsService {
   }
 
   async remove(id: number): Promise<void> {
+    await this.removeFilmPlanets(id);
     const planet = await this.findOne(id);
     await planet.destroy();
+  }
+
+  async removeFilmPlanets(planetId): Promise<void> {
+    await this.filmPlanetModel.destroy({ where: { planetId: planetId } });
   }
 
   async insertPlanets(planets): Promise<void> {
