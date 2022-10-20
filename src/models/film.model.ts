@@ -1,8 +1,9 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { FilmPlanet } from "./filmPlanet.model";
 
 @Table
 export class Film extends Model {
-  @Column({ allowNull: false })
+  @Column({ allowNull: false, unique: true })
   apiId: number;
 
   @Column
@@ -15,4 +16,7 @@ export class Film extends Model {
     type: DataType.DATE,
   })
   releaseDate: Date;
+
+  @HasMany(() => FilmPlanet)
+  filmPlanets: FilmPlanet[];
 }

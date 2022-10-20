@@ -1,11 +1,12 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./controllers/app.controller";
-import { AppService } from "./services/app.service";
 import { ConfigModule } from "@nestjs/config";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Planet } from "./models/planet.model";
 import { Film } from "./models/film.model";
+import { FilmPlanet } from "./models/filmPlanet.model";
 import { FilmsService } from "./services/films.service";
+import { PlanetsController } from "./controllers/planets.controller";
+import { PlanetsService } from "./services/planets.service";
 
 @Module({
   imports: [
@@ -17,12 +18,12 @@ import { FilmsService } from "./services/films.service";
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [Planet, Film],
       autoLoadModels: true,
       synchronize: true,
     }),
+    SequelizeModule.forFeature([Film, Planet, FilmPlanet]),
   ],
-  // controllers: [AppController],
-  // providers: [AppService, FilmsService],
+  controllers: [PlanetsController],
+  providers: [PlanetsService, FilmsService],
 })
 export class AppModule {}

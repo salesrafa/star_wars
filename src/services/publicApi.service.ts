@@ -3,7 +3,7 @@ import axios from "axios";
 
 @Injectable()
 export class PublicApiService {
-  static async loadData(): Promise<boolean> {
+  static async loadPlanets(): Promise<any> {
     let swPublicApi = `${process.env.SW_PUBLIC_API}planets`;
     console.log(`loading data in DB from ${swPublicApi}`);
     const client = axios.create({ baseURL: swPublicApi });
@@ -12,11 +12,23 @@ export class PublicApiService {
     while (page && page < 1000) {
       const { data } = await client.get(`?page=${page}`);
       if (data) {
-        console.log(data.results);
+        data.results.forEach((planet) => {
+          const filmIds = planet.films.map((filmUrl) => {
+            return filmUrl.split("/")[5];
+          });
+          const planetApiId = planet.url.split("/")[5];
+          planets.push({
+            apiId: planetApiId,
+            name: planet.name,
+            climate: planet.climate,
+            terrain: planet.terrain,
+            filmIds: filmIds,
+          });
+        });
         page = data.next ? page + 1 : null;
       }
     }
-    return true;
+    return planets;
   }
 
   static async loadFilms(): Promise<any[]> {
