@@ -52,7 +52,9 @@ export class PlanetsService {
   async remove(id: number): Promise<void> {
     await this.removeFilmPlanets(id);
     const planet = await this.findOne(id);
-    await planet.destroy();
+    if (planet) {
+      await planet.destroy();
+    }
   }
 
   async removeFilmPlanets(planetId): Promise<void> {
@@ -70,6 +72,7 @@ export class PlanetsService {
           climate: planets[i].climate,
           terrain: planets[i].terrain,
         },
+        paranoid: false
       });
 
       for (const filmId of planets[i].filmIds) {
