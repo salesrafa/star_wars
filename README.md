@@ -136,7 +136,7 @@ Possible response:
 ```bash
 [
     {
-        "id": 11,
+        "ApiId": 11,
         "name": "Alderaan",
         "climate": "temperate",
         "terrain": "grasslands, mountains",
@@ -154,7 +154,7 @@ Possible response:
         ]
     },
     {
-        "id": 12,
+        "ApiId": 12,
         "name": "Hoth",
         "climate": "frozen",
         "terrain": "tundra, ice caves, mountain ranges",
@@ -174,7 +174,7 @@ The application will search for the planet with de id (api_id) in database.
 Possible response:
 ```bash
 {
-    "id": 12,
+    "ApiId": 12,
     "name": "Hoth",
     "climate": "frozen",
     "terrain": "tundra, ice caves, mountain ranges",
