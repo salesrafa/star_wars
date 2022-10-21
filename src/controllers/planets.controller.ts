@@ -5,7 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
-  Put,
+  Post,
   Query,
   Res,
 } from "@nestjs/common";
@@ -16,14 +16,14 @@ import { PlanetsService } from "../services/planets.service";
 export class PlanetsController {
   constructor(private readonly planetService: PlanetsService) {}
 
-  @Put(":id")
+  @Post("load-planet/:apiId")
   async put(
-    @Param("id") id: number,
+    @Param("apiId") apiId: number,
     @Body() planet: any,
     @Res() res: Response
   ): Promise<void> {
-    const isUpdated = await this.planetService.update(id, planet);
-    if (isUpdated) {
+    const wasCreated = await this.planetService.insertPlanet(apiId);
+    if (wasCreated) {
       res.json({ message: "success" });
     } else {
       res.status(HttpStatus.NOT_FOUND).json({ message: "NOT FOUND" });
@@ -39,7 +39,7 @@ export class PlanetsController {
     if (planets.length > 0) {
       res.json(planets);
     } else {
-      res.status(HttpStatus.NOT_FOUND).json({ message: "NOT PLANETS" });
+      res.status(HttpStatus.NOT_FOUND).json({ message: "NO PLANETS" });
     }
   }
 

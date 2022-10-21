@@ -3,6 +3,8 @@ import { InjectModel } from "@nestjs/sequelize";
 import { Planet } from "../models/planet.model";
 import { Film } from "../models/film.model";
 import { FilmPlanet } from "../models/filmPlanet.model";
+import { PublicApiService } from "./publicApi.service";
+import { FilmsService } from "./films.service";
 
 @Injectable()
 export class PlanetsService {
@@ -12,7 +14,8 @@ export class PlanetsService {
     @InjectModel(Film)
     private filmModel: typeof Film,
     @InjectModel(FilmPlanet)
-    private filmPlanetModel: typeof FilmPlanet
+    private filmPlanetModel: typeof FilmPlanet,
+    private filmService: FilmsService
   ) {}
 
   async findAll(name: string): Promise<any> {
@@ -63,28 +66,50 @@ export class PlanetsService {
     await this.filmPlanetModel.destroy({ where: { planetId: planetId } });
   }
 
-  async insertPlanets(planets): Promise<void> {
-    for (let i = 0; i < planets.length; i++) {
-      const [planet, _] = await this.planetModel.findOrCreate({
+  async insertPlanet(apiId: number): Promise<any> {
+    const planet = await PublicApiService.loadPlanet(apiId);
+    if (planet) {
+      const [planetCreated, wasCreated] = await this.planetModel.findOrCreate({
         where: {
-          apiId: planets[i].apiId,
+          apiId: planet.apiId,
         },
         defaults: {
-          name: planets[i].name,
-          climate: planets[i].climate,
-          terrain: planets[i].terrain,
+          name: planet.name,
+          climate: planet.climate,
+          terrain: planet.terrain,
         },
         paranoid: false,
       });
-
-      for (const filmId of planets[i].filmIds) {
-        await this.insertFilmPlanet(filmId, planet.id);
+      if (!wasCreated) {
+        await planetCreated.update(
+          {
+            name: planet.name,
+            climate: planet.climate,
+            terrain: planet.terrain,
+          },
+          { where: { id: planetCreated.id } }
+        );
       }
+      for (const filmId of planet.filmIds) {
+        await this.insertFilmPlanet(filmId, planetCreated.id);
+      }
+      return true;
+    } else {
+      return false;
     }
   }
 
-  async insertFilmPlanet(filmApiId: number, planetId: number): Promise<void> {
-    const film = await this.filmModel.findOne({ where: { apiId: filmApiId } });
+  async insertFilmPlanet(filmApiId: number, planetId: number): Promise<any> {
+    let film = await this.filmModel.findOne({ where: { apiId: filmApiId } });
+    if (!film) {
+      const apiFilm = await PublicApiService.loadFilm(filmApiId);
+      if (apiFilm) {
+        film = await this.filmService.insertFilm(apiFilm);
+      } else {
+        return false;
+      }
+    }
+
     if (film) {
       await this.filmPlanetModel.findOrCreate({
         where: { planetId: planetId, filmId: film.id },
