@@ -46,17 +46,36 @@ export class PlanetsService {
     });
   }
 
-  findOne(id: number): Promise<Planet> {
-    return this.planetModel.findOne({
+  async findOne(id: number): Promise<any> {
+    const planet = await this.planetModel.findOne({
       where: { id },
+      include: [{ model: FilmPlanet, include: [{ model: Film }] }],
     });
+    let films = [];
+    if (planet) {
+      films = planet.filmPlanets.map((filmPlanet) => {
+        return {
+          name: filmPlanet.film.name,
+          director: filmPlanet.film.director,
+          release_date: filmPlanet.film.releaseDate,
+        };
+      });
+      return {
+        id: planet.id,
+        name: planet.name,
+        climate: planet.climate,
+        terrain: planet.terrain,
+        films: films,
+      };
+    }
+    return null;
   }
 
   async remove(id: number): Promise<boolean> {
     await this.removeFilmPlanets(id);
     const planet = await this.findOne(id);
     if (planet) {
-      await planet.destroy();
+      await this.planetModel.destroy({ where: { id: planet.id } });
       return true;
     }
     return false;

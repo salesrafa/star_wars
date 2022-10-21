@@ -9,7 +9,7 @@ import {
 import { Film } from "./film.model";
 import { Planet } from "./planet.model";
 
-@Table({ paranoid: true })
+@Table
 export class FilmPlanet extends Model {
   @ForeignKey(() => Planet)
   @Column({ allowNull: false })

@@ -1,7 +1,7 @@
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
 import { FilmPlanet } from "./filmPlanet.model";
 
-@Table({ paranoid: true })
+@Table
 export class Film extends Model {
   @Column({ allowNull: false, unique: true })
   apiId: number;
