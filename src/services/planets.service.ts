@@ -61,6 +61,7 @@ export class PlanetsService {
         };
       });
       return {
+        id : planet.id,
         apiId: planet.apiId,
         name: planet.name,
         climate: planet.climate,
@@ -74,6 +75,7 @@ export class PlanetsService {
   async remove(apiId: number): Promise<boolean> {
     const planet = await this.findOne(apiId);
     if (planet) {
+      console.log(planet)
       await this.removeFilmPlanets(planet.id);
       await this.planetModel.destroy({ where: { id: planet.id } });
       return true;
