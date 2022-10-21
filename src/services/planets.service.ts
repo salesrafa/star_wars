@@ -46,9 +46,9 @@ export class PlanetsService {
     });
   }
 
-  async findOne(id: number): Promise<any> {
+  async findOne(apiId: number): Promise<any> {
     const planet = await this.planetModel.findOne({
-      where: { id },
+      where: { apiId },
       include: [{ model: FilmPlanet, include: [{ model: Film }] }],
     });
     let films = [];
@@ -71,10 +71,10 @@ export class PlanetsService {
     return null;
   }
 
-  async remove(id: number): Promise<boolean> {
-    await this.removeFilmPlanets(id);
-    const planet = await this.findOne(id);
+  async remove(apiId: number): Promise<boolean> {
+    const planet = await this.findOne(apiId);
     if (planet) {
+      await this.removeFilmPlanets(planet.id);
       await this.planetModel.destroy({ where: { id: planet.id } });
       return true;
     }

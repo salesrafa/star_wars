@@ -24,11 +24,11 @@ export class PlanetsController {
     const wasCreated = await this.planetService.insertPlanet(apiId);
     if (wasCreated) {
       res.json({ message: "success" });
-      console.log(`${new Date()} - planet created - api id ${apiId}`)
+      console.log(`${new Date()} - planet created - api id ${apiId}`);
       return true;
     } else {
       res.status(HttpStatus.NOT_FOUND).json({ message: "NOT FOUND" });
-      console.log(`${new Date()} - planet not created - api id ${apiId}`)
+      console.log(`${new Date()} - planet not created - api id ${apiId}`);
       return false;
     }
   }
@@ -40,37 +40,40 @@ export class PlanetsController {
   ): Promise<void> {
     const planets = await this.planetService.findAll(name);
     if (planets.length > 0) {
-      console.log(`${new Date()} - planets founded ${planets.length}`)
+      console.log(`${new Date()} - planets founded ${planets.length}`);
       res.json(planets);
     } else {
-      console.log(`${new Date()} - no planets was founded`)
+      console.log(`${new Date()} - no planets was founded`);
       res.status(HttpStatus.NOT_FOUND).json({ message: "NO PLANETS" });
     }
   }
 
-  @Get(":id")
-  async get(@Param("id") id: number, @Res() res: Response): Promise<any> {
-    const planet = await this.planetService.findOne(id);
+  @Get(":apiId")
+  async get(@Param("apiId") apiId: number, @Res() res: Response): Promise<any> {
+    const planet = await this.planetService.findOne(apiId);
     if (planet) {
-      console.log(`${new Date()} - planet founded ${planet.name}`)
+      console.log(`${new Date()} - planet founded ${planet.name}`);
       res.json(planet);
     } else {
-      console.log(`${new Date()} - no planets was founded`)
+      console.log(`${new Date()} - no planets was founded`);
       res
         .status(HttpStatus.NOT_FOUND)
         .json({ message: "THERE IS NO PLANET WITH THIS ID" });
     }
   }
 
-  @Delete(":id")
-  async delete(@Param("id") id: number, @Res() res: Response): Promise<any> {
-    const wasDeleted = await this.planetService.remove(id);
+  @Delete(":apiId")
+  async delete(
+    @Param("apiId") apiId: number,
+    @Res() res: Response
+  ): Promise<any> {
+    const wasDeleted = await this.planetService.remove(apiId);
     if (wasDeleted) {
-      console.log(`${new Date()} - planet deleted - id ${id}`)
+      console.log(`${new Date()} - planet deleted - id ${apiId}`);
 
       res.json({ message: "success" });
     } else {
-      console.log(`${new Date()} - planet not deleted - id ${id}`)
+      console.log(`${new Date()} - planet not deleted - id ${apiId}`);
       res
         .status(HttpStatus.NOT_FOUND)
         .json({ message: "THERE IS NO PLANET WITH THIS ID" });

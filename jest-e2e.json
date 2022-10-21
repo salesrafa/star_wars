@@ -1,0 +1,13 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "coverageReporters": ["html", "lcov"],
+  "collectCoverage": true,
+  "rootDir": ".",
+  "testTimeout": 15000,
+  "coverageDirectory": "./coverage",
+  "testEnvironment": "node",
+  "testMatch": ["<rootDir>/**/*.e2e-spec.{ts,js}"],
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  }
+}
