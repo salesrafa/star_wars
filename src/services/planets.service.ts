@@ -37,7 +37,7 @@ export class PlanetsService {
         };
       });
       return {
-        id: planet.id,
+        apiId: planet.apiId,
         name: planet.name,
         climate: planet.climate,
         terrain: planet.terrain,
@@ -61,7 +61,7 @@ export class PlanetsService {
         };
       });
       return {
-        id: planet.id,
+        apiId: planet.apiId,
         name: planet.name,
         climate: planet.climate,
         terrain: planet.terrain,
@@ -97,7 +97,6 @@ export class PlanetsService {
           climate: planet.climate,
           terrain: planet.terrain,
         },
-        paranoid: false,
       });
       if (!wasCreated) {
         await planetCreated.update(
